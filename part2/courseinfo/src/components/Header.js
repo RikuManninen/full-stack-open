@@ -1,7 +1,7 @@
 import React from 'react'
 
 const Header = ({ header }) => {
-  return <h1>{header}</h1>
+  return <h2>{header}</h2>
 }
 
 export default Header
