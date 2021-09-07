@@ -1,4 +1,7 @@
 import React, { useState } from 'react'
+import Search from './components/Search'
+import PersonForm from './components/PersonForm'
+import Persons from './components/Persons'
 
 const App = () => {
 
@@ -29,6 +32,7 @@ const App = () => {
       }
       setPersons(persons.concat(obj))
       setNewName('')
+      setNewNumber('')
     }
   }
 
@@ -47,32 +51,11 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-        <div>
-          filter shown with <input 
-            value={searchWord}
-            onChange={handleSearchChange} 
-          />
-        </div>
+        <Search value={searchWord} handler={handleSearchChange}/>
       <h2>add new</h2>
-      <form onSubmit={addName}>
-        <div>
-          name: <input 
-            value={newName}
-            onChange={handleNameChange} 
-          />
-        </div>
-        <div>
-          number: <input 
-            value={newNumber}
-            onChange={handleNumberChange} 
-          />
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
+        <PersonForm action={addName} nameValue={newName} nameHandler={handleNameChange} numberValue={newNumber} numberHandler={handleNumberChange}/>
       <h2>Numbers</h2>
-      {personsToShow.map(p => <p key={p.name}>{p.name} {p.number}</p>)}
+        <Persons persons={personsToShow} />
     </div>
   )
 
