@@ -40,7 +40,14 @@ const App = () => {
           </div>
 
         : countriesToShow.length <= 10 
-          ? countriesToShow.map(country => <div key={country.name}>{country.name}</div>)
+          ? countriesToShow.map(country => {
+            return (
+              <div key={country.name}>
+                {country.name}
+                <button onClick={() => setSearchWord(country.name)}>show</button>
+              </div>
+            )
+          })
 
         : <div>Too many matches, specify another filter</div>
       }
