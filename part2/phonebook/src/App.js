@@ -22,10 +22,17 @@ const App = () => {
   ? persons.filter(p => p.name.toLowerCase().includes(searchWord.toLowerCase()))
   : persons
 
+  const clearFields = () => {
+    setNewName('')
+    setNewNumber('')
+  }
+
   const addPerson = (event) => {
     event.preventDefault()
     if(persons.some(p => p.name === newName)) {
-      alert(`${newName} is already added to phonebook`)
+      const person = persons.filter(p => p.name === newName)[0]
+      window.confirm(`${person.name} is already added to phonebook, replase the old number with new one?`) &&
+      updatePerson(person)
     }
     else {
       const obj = {
@@ -36,10 +43,18 @@ const App = () => {
         .create(obj)
         .then(response => {
           setPersons(persons.concat(response.data))
-          setNewName('')
-          setNewNumber('')
+          clearFields()
         })
     }
+  }
+
+  const updatePerson = (person) => {
+    personService
+      .update(person.id, { ...person, number: newNumber })
+      .then(response => {
+        setPersons(persons.map(p => p.id !== person.id ? p : response.data))
+        clearFields()
+      })
   }
   
   const removePerson = (person) => {
