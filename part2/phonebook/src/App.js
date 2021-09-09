@@ -3,6 +3,7 @@ import Search from './components/Search'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
 import personService from './services/persons'
+import Notification from './components/Notification'
 
 const App = () => {
 
@@ -11,6 +12,8 @@ const App = () => {
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber ] = useState('')
   const [ searchWord, setSearchWord ] = useState('')
+
+  const [message, setMessage] = useState(null)
 
   useEffect(() => {
     personService
@@ -42,6 +45,8 @@ const App = () => {
       personService
         .create(obj)
         .then(response => {
+          setMessage(`Added ${response.data.name}`)
+          setTimeout(() => setMessage(null), 5000)
           setPersons(persons.concat(response.data))
           clearFields()
         })
@@ -52,6 +57,8 @@ const App = () => {
     personService
       .update(person.id, { ...person, number: newNumber })
       .then(response => {
+        setMessage(`Updated ${response.data.name}`)
+        setTimeout(() => setMessage(null), 5000)
         setPersons(persons.map(p => p.id !== person.id ? p : response.data))
         clearFields()
       })
@@ -62,7 +69,11 @@ const App = () => {
     window.confirm(`Delete ${person.name} ?`) && 
     personService
       .remove(person.id)
-      .then(setPersons(newArray))
+      .then(() => {
+        setMessage(`Deleted ${person.name}`)
+        setTimeout(() => setMessage(null), 5000)
+        setPersons(newArray)
+      })
   }
 
   const handleNameChange = (event) => {
@@ -79,6 +90,7 @@ const App = () => {
 
   return (
     <div>
+      <Notification message={message}/>
       <h2>Phonebook</h2>
         <Search value={searchWord} handler={handleSearchChange}/>
       <h2>add new</h2>
