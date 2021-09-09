@@ -22,7 +22,7 @@ const App = () => {
   ? persons.filter(p => p.name.toLowerCase().includes(searchWord.toLowerCase()))
   : persons
 
-  const addName = (event) => {
+  const addPerson = (event) => {
     event.preventDefault()
     if(persons.some(p => p.name === newName)) {
       alert(`${newName} is already added to phonebook`)
@@ -40,6 +40,14 @@ const App = () => {
           setNewNumber('')
         })
     }
+  }
+  
+  const removePerson = (person) => {
+    const newArray = persons.filter(p => p.id !== person.id)
+    window.confirm(`Delete ${person.name} ?`) && 
+    personService
+      .remove(person.id)
+      .then(setPersons(newArray))
   }
 
   const handleNameChange = (event) => {
@@ -59,9 +67,9 @@ const App = () => {
       <h2>Phonebook</h2>
         <Search value={searchWord} handler={handleSearchChange}/>
       <h2>add new</h2>
-        <PersonForm action={addName} nameValue={newName} nameHandler={handleNameChange} numberValue={newNumber} numberHandler={handleNumberChange}/>
+        <PersonForm action={addPerson} nameValue={newName} nameHandler={handleNameChange} numberValue={newNumber} numberHandler={handleNumberChange}/>
       <h2>Numbers</h2>
-        <Persons persons={personsToShow} />
+        <Persons persons={personsToShow} remove={removePerson} />
     </div>
   )
 
