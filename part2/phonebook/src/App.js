@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Search from './components/Search'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
-import axios from 'axios'
+import personService from './services/persons'
 
 const App = () => {
 
@@ -13,8 +13,8 @@ const App = () => {
   const [ searchWord, setSearchWord ] = useState('')
 
   useEffect(() => {
-    axios
-      .get('http://localhost:3001/persons')
+    personService
+      .getAll()
       .then(response => setPersons(response.data))
   }, [])
 
@@ -32,8 +32,8 @@ const App = () => {
         name: newName,
         number: newNumber
       }
-      axios
-        .post('http://localhost:3001/persons', obj)
+      personService
+        .create(obj)
         .then(response => {
           setPersons(persons.concat(response.data))
           setNewName('')
