@@ -12,8 +12,7 @@ const App = () => {
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber ] = useState('')
   const [ searchWord, setSearchWord ] = useState('')
-
-  const [message, setMessage] = useState(null)
+  const [ message, setMessage ] = useState(null)
 
   useEffect(() => {
     personService
@@ -28,6 +27,11 @@ const App = () => {
   const clearFields = () => {
     setNewName('')
     setNewNumber('')
+  }
+
+  const msg = (obj) => {
+    setMessage(obj)
+    setTimeout(() => setMessage(null), 5000)
   }
 
   const addPerson = (event) => {
@@ -45,8 +49,10 @@ const App = () => {
       personService
         .create(obj)
         .then(response => {
-          setMessage(`Added ${response.data.name}`)
-          setTimeout(() => setMessage(null), 5000)
+          msg({
+            type: 'success',
+            content: `Added ${response.data.name}`
+          })
           setPersons(persons.concat(response.data))
           clearFields()
         })
@@ -57,10 +63,18 @@ const App = () => {
     personService
       .update(person.id, { ...person, number: newNumber })
       .then(response => {
-        setMessage(`Updated ${response.data.name}`)
-        setTimeout(() => setMessage(null), 5000)
+        msg({
+          type: 'success',
+          content: `Updated ${response.data.name}`
+        })
         setPersons(persons.map(p => p.id !== person.id ? p : response.data))
         clearFields()
+      })
+      .catch(error => {
+        msg({
+          type: 'error',
+          content: `Information of ${person.name} has already been removed from server`
+        })
       })
   }
   
@@ -70,8 +84,10 @@ const App = () => {
     personService
       .remove(person.id)
       .then(() => {
-        setMessage(`Deleted ${person.name}`)
-        setTimeout(() => setMessage(null), 5000)
+        msg({
+          type: 'success',
+          content: `Deleted ${person.name}`
+        })
         setPersons(newArray)
       })
   }
