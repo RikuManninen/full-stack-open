@@ -56,6 +56,12 @@ const App = () => {
           setPersons(persons.concat(response.data))
           clearFields()
         })
+        .catch(error => {
+          msg({
+            type: 'error',
+            content: error.response.data.error
+          })
+        })
     }
   }
 
