@@ -1,4 +1,4 @@
-var _ = require('lodash')
+const _ = require('lodash')
 
 // eslint-disable-next-line no-unused-vars
 const dummy = (blogs) => {
@@ -33,9 +33,27 @@ const mostBlogs = (blogs) => {
   return fn(blogs)
 }
 
+const mostLikes = (blogs) => {
+  const { flow, toPairs, maxBy, last, reduce } = _
+
+  const fn = flow(
+    arr => reduce(arr, (result, { author, likes }) => {
+      result[author] = result[author] || 0
+      result[author] += likes
+      return result
+    }, {}),
+    toPairs,
+    arr => maxBy(arr, last),
+    arr => { return { author: arr[0], likes: arr[1] } }
+  )
+
+  return fn(blogs)
+}
+
 module.exports = {
   dummy,
   totalLikes,
   favoriteBlog,
-  mostBlogs
+  mostBlogs,
+  mostLikes
 }
