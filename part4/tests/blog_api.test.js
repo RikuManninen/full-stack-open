@@ -91,6 +91,24 @@ test('a valid blog can be added', async () => {
   expect(titles).toContain(newBlog.title)
 })
 
+test('if blog doesn\'t have a \'likes\' field, it is added and set to 0', async () => {
+  const newBlog = {
+    title: 'My GitHub Page',
+    author: 'Riku Manninen',
+    url: 'github.com/RikuManninen'
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(200)
+    .expect('Content-Type', /application\/json/)
+
+  const response = await api.get('/api/blogs')
+
+  expect(response.body[response.body.length - 1].likes).toBe(0)
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })
