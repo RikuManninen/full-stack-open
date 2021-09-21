@@ -123,6 +123,27 @@ test('if blog doesn\'t have a \'likes\' field, it is added and set to 0', async 
   expect(response.body[response.body.length - 1].likes).toBe(0)
 })
 
+test('a blog can be deleted', async () => {
+  const response = await api.get('/api/blogs')
+  const blogToDelete = response.body[0]
+
+  console.log(blogToDelete.id)
+
+  await api
+    .delete(`/api/blogs/${blogToDelete.id}`)
+    .expect(204)
+
+  const newResponse = await api.get('/api/blogs')
+
+  console.log(newResponse.body)
+
+  expect(newResponse.body).toHaveLength(initialBlogs.length - 1)
+
+  const titles = newResponse.body.map(r => r.title)
+
+  expect(titles).not.toContain(blogToDelete.title)
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })
