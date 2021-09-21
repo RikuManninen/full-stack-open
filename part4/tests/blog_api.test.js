@@ -91,6 +91,20 @@ test('a valid blog can be added', async () => {
   expect(titles).toContain(newBlog.title)
 })
 
+test('an invalid blog can not be added', async () => {
+
+  const newBlog = {
+    url: 'github.com/RikuManninen'
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
+    .expect('Content-Type', /application\/json/)
+
+})
+
 test('if blog doesn\'t have a \'likes\' field, it is added and set to 0', async () => {
   const newBlog = {
     title: 'My GitHub Page',
