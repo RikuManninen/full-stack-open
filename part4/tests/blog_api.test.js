@@ -6,16 +6,39 @@ const api = supertest(app)
 const Blog = require('../models/blog')
 const bcrypt = require('bcrypt')
 const User = require('../models/user')
+const jwt = require('jsonwebtoken')
 
-describe('when there is initially three blogs at db', () => {
+describe('when there is initially three blogs at db, added by testUser', () => {
+
+  let token = null
+  let userId = null
+
+  beforeAll(async () => {
+    await User.deleteMany({})
+    const passwordHash = await bcrypt.hash('sekret', 10)
+    const user = new User({ username: 'testUser', passwordHash })
+    await user.save()
+    const userForToken = {
+      username: user.username,
+      id: user._id,
+    }
+    token = jwt.sign(userForToken, process.env.SECRET)
+    userId = user._id
+  })
+
   beforeEach(async () => {
+
     await Blog.deleteMany({})
-    let blogObject = new Blog(helper.initialBlogs[0])
+
+    const initBlogsWithUser = helper.initialBlogs.map(obj => ({ ...obj, user: userId }))
+
+    let blogObject = new Blog(initBlogsWithUser[0])
     await blogObject.save()
-    blogObject = new Blog(helper.initialBlogs[1])
+    blogObject = new Blog(initBlogsWithUser[1])
     await blogObject.save()
-    blogObject = new Blog(helper.initialBlogs[2])
+    blogObject = new Blog(initBlogsWithUser[2])
     await blogObject.save()
+
   })
 
   test('blogs are returned as json', async () => {
@@ -59,6 +82,7 @@ describe('when there is initially three blogs at db', () => {
 
     await api
       .post('/api/blogs')
+      .set('Authorization', `Bearer ${token}`)
       .send(newBlog)
       .expect(200)
       .expect('Content-Type', /application\/json/)
@@ -79,6 +103,7 @@ describe('when there is initially three blogs at db', () => {
 
     await api
       .post('/api/blogs')
+      .set('Authorization', `Bearer ${token}`)
       .send(newBlog)
       .expect(400)
       .expect('Content-Type', /application\/json/)
@@ -94,6 +119,7 @@ describe('when there is initially three blogs at db', () => {
 
     await api
       .post('/api/blogs')
+      .set('Authorization', `Bearer ${token}`)
       .send(newBlog)
       .expect(200)
       .expect('Content-Type', /application\/json/)
@@ -109,6 +135,7 @@ describe('when there is initially three blogs at db', () => {
 
     await api
       .delete(`/api/blogs/${blogToDelete.id}`)
+      .set('Authorization', `Bearer ${token}`)
       .expect(204)
 
     const blogsAtEnd = await helper.blogsInDb()
@@ -142,6 +169,22 @@ describe('when there is initially three blogs at db', () => {
 
     expect(titles).toContain(updatedBlog.title)
   })
+
+  test('a blog cannot be added if token is missing', async() => {
+    const newBlog = {
+      title: 'My GitHub Page',
+      author: 'Riku Manninen',
+      url: 'github.com/RikuManninen',
+      likes: 6
+    }
+
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(401)
+      .expect('Content-Type', /application\/json/)
+  })
+
 })
 
 describe('when there is initially one user at db', () => {

@@ -16,18 +16,23 @@ blogsRouter.post('/', async (req, res) => {
   const body = req.body
   const user = req.user
 
-  const blog = new Blog({
-    title: body.title,
-    author: body.author,
-    url: body.url,
-    likes: body.likes | 0,
-    user: user._id
-  })
+  if(req.user) {
+    const blog = new Blog({
+      title: body.title,
+      author: body.author,
+      url: body.url,
+      likes: body.likes | 0,
+      user: user._id
+    })
 
-  const savedBlog = await blog.save()
-  user.blogs = user.blogs.concat(savedBlog._id)
-  await user.save()
-  res.json(savedBlog.toJSON())
+    const savedBlog = await blog.save()
+    user.blogs = user.blogs.concat(savedBlog._id)
+    await user.save()
+    res.json(savedBlog.toJSON())
+  }
+  else {
+    return res.status(401).json({ error: 'token missing or invalid' })
+  }
 })
 
 blogsRouter.delete('/:id', async (req, res) => {
