@@ -46,23 +46,22 @@ const Blog = ({ blog, user }) => {
 
   return (
     <div style={blogStyle}>
-      <div style={hideWhenVisible}>
+      <div style={hideWhenVisible} className='minimizedContent'>
         {blog.title} {blog.author} <button onClick={() => setBlogExpanded(true)}>show</button>
       </div>
-      <div style={showWhenVisible}>
+      <div style={showWhenVisible} className='expandedContent'>
         {blog.title} <button onClick={() => setBlogExpanded(false)}>hide</button><br/>
         {blog.url}<br/>
         likes {likes} <button onClick={addLike}>like</button><br/>
         {blog.author}<br/>
-        {blog.user.username === user.username && <button onClick={removeBlog}>remove</button>}
+        {user && blog.user.username === user.username && <button onClick={removeBlog}>remove</button>}
       </div>
     </div>
   )
 }
 
 Blog.propTypes = {
-  blog: propTypes.object.isRequired,
-  user: propTypes.object.isRequired
+  blog: propTypes.object.isRequired
 }
 
 export default Blog
