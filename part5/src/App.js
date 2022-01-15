@@ -108,7 +108,7 @@ const App = () => {
         <BlogForm blogService={blogService} blogs={blogs} setBlogs={setBlogs} msg={msg} />
 
         {blogs.map(blog =>
-          <Blog key={blog.id} blog={blog} />
+          <Blog key={blog.id} blog={blog} user={user} />
         )}
       </div>
     )
