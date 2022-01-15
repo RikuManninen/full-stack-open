@@ -1,5 +1,28 @@
 import React, { useState } from 'react'
+import blogService from '../services/blogs'
+
 const Blog = ({blog}) => {
+
+  const [likes, setLikes] = useState(blog.likes)
+
+  const addLike = () => {
+
+    const blogObject = {
+      id: blog.id,
+      user: blog.user,
+      likes: likes+1,
+      author: blog.author,
+      title: blog.title,
+      url: blog.url
+    }
+
+    blogService
+      .put(blogObject)
+        .then(returnedBlog => {
+          setLikes(returnedBlog.likes)
+        })
+  }
+
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -20,7 +43,7 @@ const Blog = ({blog}) => {
       <div style={showWhenVisible}>
         {blog.title} <button onClick={() => setBlogVisible(false)}>hide</button><br/>
         {blog.url}<br/>
-        likes {blog.likes} <button>like</button><br/>
+        likes {likes} <button onClick={addLike}>like</button><br/>
         {blog.author}
       </div>
     </div>  
