@@ -88,6 +88,19 @@ const App = () => {
       })
   }
 
+  const createBlog = (blogObject) => {
+    blogService
+      .create(blogObject)
+      .then(returnedBlog => {
+        setBlogs(blogs.concat(returnedBlog))
+        msg({
+          type: 'success',
+          content: `a new blog ${returnedBlog.title} by ${returnedBlog.author} added`
+        })
+
+      })
+  }
+
   const loginForm = () => {
     return (
       <div>
@@ -123,7 +136,7 @@ const App = () => {
         <h2>blogs</h2>
         <p>{user.name} logged in <button onClick={handleLogout}>logout</button></p>
 
-        <BlogForm blogService={blogService} blogs={blogs} setBlogs={setBlogs} msg={msg} />
+        <BlogForm createBlog={createBlog} />
 
         {blogs.map(blog =>
           <Blog key={blog.id} blog={blog} user={user} handleLike={handleLike} />

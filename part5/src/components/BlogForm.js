@@ -1,37 +1,27 @@
 import PropTypes from 'prop-types'
 import React, { useState } from 'react'
-const BlogForm = ({ blogService, blogs, setBlogs, msg }) => {
+const BlogForm = ({ createBlog }) => {
 
   const [blogFormVisible, setBlogFormVisible] = useState(false)
-
-  const hideWhenVisible = { display: blogFormVisible ? 'none' : '' }
-  const showWhenVisible = { display: blogFormVisible ? '' : 'none' }
 
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
 
+  const hideWhenVisible = { display: blogFormVisible ? 'none' : '' }
+  const showWhenVisible = { display: blogFormVisible ? '' : 'none' }
+
   const addBlog = (event) => {
     event.preventDefault()
-    const blogObject = {
+    createBlog({
       title: title,
       author: author,
       url: url
-    }
-
-    blogService
-      .create(blogObject)
-      .then(returnedBlog => {
-        setBlogs(blogs.concat(returnedBlog))
-        msg({
-          type: 'success',
-          content: `a new blog ${returnedBlog.title} by ${returnedBlog.author} added`
-        })
-        setTitle('')
-        setAuthor('')
-        setUrl('')
-        setBlogFormVisible(false)
-      })
+    })
+    setTitle('')
+    setAuthor('')
+    setUrl('')
+    setBlogFormVisible(false)
   }
 
   return (
@@ -41,10 +31,11 @@ const BlogForm = ({ blogService, blogs, setBlogs, msg }) => {
       </div>
       <div style={showWhenVisible}>
         <h2>create new</h2>
-        <form onSubmit={addBlog}>
+        <form onSubmit={addBlog} id="form">
           <div>
             title:
             <input
+              id="title"
               type="text"
               value={title}
               name="Title"
@@ -78,10 +69,7 @@ const BlogForm = ({ blogService, blogs, setBlogs, msg }) => {
 }
 
 BlogForm.propTypes = {
-  blogService: PropTypes.object.isRequired,
-  blogs: PropTypes.array.isRequired,
-  setBlogs: PropTypes.func.isRequired,
-  msg: PropTypes.func.isRequired
+  createBlog: PropTypes.func.isRequired
 }
 
 export default BlogForm
