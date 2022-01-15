@@ -1,6 +1,6 @@
 import React from 'react'
 import '@testing-library/jest-dom/extend-expect'
-import { render } from '@testing-library/react'
+import { render, fireEvent } from '@testing-library/react'
 import Blog from './Blog'
 
 describe('blog tests', () => {
@@ -25,5 +25,14 @@ describe('blog tests', () => {
     const expandedDiv = component.container.querySelector('.expandedContent')
     expect(expandedDiv).toHaveStyle('display: none')
     expect(minimizedDiv).toHaveTextContent(`${blog.title} ${blog.author}`)
+  })
+
+  test('after clicking the button, children are displayed', () => {
+    const button = component.getByText('show')
+    fireEvent.click(button)
+
+    const div = component.container.querySelector('.expandedContent')
+    expect(div).not.toHaveStyle('display: none')
+    expect(div).toHaveTextContent(`${blog.title} hide ${blog.url} likes ${blog.likes} like ${blog.author}`)
   })
 })

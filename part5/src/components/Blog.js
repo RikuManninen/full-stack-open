@@ -50,9 +50,9 @@ const Blog = ({ blog, user }) => {
         {blog.title} {blog.author} <button onClick={() => setBlogExpanded(true)}>show</button>
       </div>
       <div style={showWhenVisible} className='expandedContent'>
-        {blog.title} <button onClick={() => setBlogExpanded(false)}>hide</button><br/>
-        {blog.url}<br/>
-        likes {likes} <button onClick={addLike}>like</button><br/>
+        {blog.title} <button onClick={() => setBlogExpanded(false)}>hide</button> <br/>
+        {blog.url} <br/>
+        likes {likes} <button onClick={addLike}>like</button> <br/>
         {blog.author}<br/>
         {user && blog.user.username === user.username && <button onClick={removeBlog}>remove</button>}
       </div>
