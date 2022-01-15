@@ -2,29 +2,11 @@ import React, { useState } from 'react'
 import blogService from '../services/blogs'
 import propTypes from 'prop-types'
 
-const Blog = ({ blog, user }) => {
+const Blog = ({ blog, user, handleLike }) => {
 
   const [likes, setLikes] = useState(blog.likes)
 
   const [visible, setVisible] = useState(true)
-
-  const addLike = () => {
-
-    const blogObject = {
-      id: blog.id,
-      user: blog.user,
-      likes: likes+1,
-      author: blog.author,
-      title: blog.title,
-      url: blog.url
-    }
-
-    blogService
-      .put(blogObject)
-      .then(returnedBlog => {
-        setLikes(returnedBlog.likes)
-      })
-  }
 
   const removeBlog = () => {
     window.confirm(`Remove blog ${blog.title} by ${blog.author}`) &&
@@ -52,7 +34,7 @@ const Blog = ({ blog, user }) => {
       <div style={showWhenVisible} className='expandedContent'>
         {blog.title} <button onClick={() => setBlogExpanded(false)}>hide</button> <br/>
         {blog.url} <br/>
-        likes {likes} <button onClick={addLike}>like</button> <br/>
+        likes {likes} <button onClick={() => handleLike(blog, likes, setLikes)}>like</button> <br/>
         {blog.author}<br/>
         {user && blog.user.username === user.username && <button onClick={removeBlog}>remove</button>}
       </div>

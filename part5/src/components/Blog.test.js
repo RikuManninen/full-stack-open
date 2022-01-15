@@ -6,6 +6,7 @@ import Blog from './Blog'
 describe('blog tests', () => {
   let component
   let blog
+  const mockHandler = jest.fn()
 
   beforeEach(() => {
     blog = {
@@ -14,13 +15,13 @@ describe('blog tests', () => {
       url: 'https://www.rikumanninen.fi/blogi',
       likes: 0
     }
+  })
+
+  test('at start only blogs title and author is rendered', () => {
 
     component = render(
       <Blog blog={blog} />
     )
-  })
-
-  test('at start only blogs title and author is rendered', () => {
     const minimizedDiv = component.container.querySelector('.minimizedContent')
     const expandedDiv = component.container.querySelector('.expandedContent')
     expect(expandedDiv).toHaveStyle('display: none')
@@ -28,11 +29,28 @@ describe('blog tests', () => {
   })
 
   test('after clicking the button, children are displayed', () => {
+
+    component = render(
+      <Blog blog={blog} />
+    )
+
     const button = component.getByText('show')
     fireEvent.click(button)
 
     const div = component.container.querySelector('.expandedContent')
     expect(div).not.toHaveStyle('display: none')
     expect(div).toHaveTextContent(`${blog.title} hide ${blog.url} likes ${blog.likes} like ${blog.author}`)
+  })
+
+  test('like function gets called 2 times, after clicking the like button 2 times', () => {
+
+    component = render(
+      <Blog blog={blog} handleLike={mockHandler} />
+    )
+
+    const button = component.getByText('like')
+    fireEvent.click(button)
+    fireEvent.click(button)
+    expect(mockHandler.mock.calls).toHaveLength(2)
   })
 })

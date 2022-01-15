@@ -70,6 +70,24 @@ const App = () => {
     console.log('logged out')
   }
 
+  const handleLike = (blog, likes, setLikes) => {
+
+    const blogObject = {
+      id: blog.id,
+      user: blog.user,
+      likes: likes+1,
+      author: blog.author,
+      title: blog.title,
+      url: blog.url
+    }
+
+    blogService
+      .put(blogObject)
+      .then(returnedBlog => {
+        setLikes(returnedBlog.likes)
+      })
+  }
+
   const loginForm = () => {
     return (
       <div>
@@ -108,7 +126,7 @@ const App = () => {
         <BlogForm blogService={blogService} blogs={blogs} setBlogs={setBlogs} msg={msg} />
 
         {blogs.map(blog =>
-          <Blog key={blog.id} blog={blog} user={user} />
+          <Blog key={blog.id} blog={blog} user={user} handleLike={handleLike} />
         )}
       </div>
     )
