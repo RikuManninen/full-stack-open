@@ -1,7 +1,7 @@
-import PropTypes from "prop-types"
-import React, {useState} from "react"
+import PropTypes from 'prop-types'
+import React, { useState } from 'react'
 const BlogForm = ({ blogService, blogs, setBlogs, msg }) => {
-  
+
   const [blogFormVisible, setBlogFormVisible] = useState(false)
 
   const hideWhenVisible = { display: blogFormVisible ? 'none' : '' }
@@ -21,17 +21,17 @@ const BlogForm = ({ blogService, blogs, setBlogs, msg }) => {
 
     blogService
       .create(blogObject)
-        .then(returnedBlog => {
-          setBlogs(blogs.concat(returnedBlog))
-          msg({
-            type: 'success',
-            content: `a new blog ${returnedBlog.title} by ${returnedBlog.author} added`
-          })
-          setTitle('')
-          setAuthor('')
-          setUrl('')
-          setBlogFormVisible(false)
+      .then(returnedBlog => {
+        setBlogs(blogs.concat(returnedBlog))
+        msg({
+          type: 'success',
+          content: `a new blog ${returnedBlog.title} by ${returnedBlog.author} added`
         })
+        setTitle('')
+        setAuthor('')
+        setUrl('')
+        setBlogFormVisible(false)
+      })
   }
 
   return (
@@ -44,7 +44,7 @@ const BlogForm = ({ blogService, blogs, setBlogs, msg }) => {
         <form onSubmit={addBlog}>
           <div>
             title:
-              <input
+            <input
               type="text"
               value={title}
               name="Title"
@@ -53,7 +53,7 @@ const BlogForm = ({ blogService, blogs, setBlogs, msg }) => {
           </div>
           <div>
             author:
-              <input
+            <input
               type="text"
               value={author}
               name="Author"
@@ -62,7 +62,7 @@ const BlogForm = ({ blogService, blogs, setBlogs, msg }) => {
           </div>
           <div>
             url:
-              <input
+            <input
               type="text"
               value={url}
               name="Url"
@@ -78,9 +78,9 @@ const BlogForm = ({ blogService, blogs, setBlogs, msg }) => {
 }
 
 BlogForm.propTypes = {
-  blogService: PropTypes.object.isRequired, 
-  blogs: PropTypes.array.isRequired, 
-  setBlogs: PropTypes.func.isRequired, 
+  blogService: PropTypes.object.isRequired,
+  blogs: PropTypes.array.isRequired,
+  setBlogs: PropTypes.func.isRequired,
   msg: PropTypes.func.isRequired
 }
 

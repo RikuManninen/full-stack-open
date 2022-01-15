@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import blogService from '../services/blogs'
 import propTypes from 'prop-types'
 
-const Blog = ({blog, user}) => {
+const Blog = ({ blog, user }) => {
 
   const [likes, setLikes] = useState(blog.likes)
 
@@ -21,13 +21,13 @@ const Blog = ({blog, user}) => {
 
     blogService
       .put(blogObject)
-        .then(returnedBlog => {
-          setLikes(returnedBlog.likes)
-        })
+      .then(returnedBlog => {
+        setLikes(returnedBlog.likes)
+      })
   }
 
   const removeBlog = () => {
-    window.confirm(`Remove blog ${blog.title} by ${blog.author}`) && 
+    window.confirm(`Remove blog ${blog.title} by ${blog.author}`) &&
       blogService.remove(blog.id).then(setVisible(false))
   }
 
@@ -56,7 +56,7 @@ const Blog = ({blog, user}) => {
         {blog.author}<br/>
         {blog.user.username === user.username && <button onClick={removeBlog}>remove</button>}
       </div>
-    </div>  
+    </div>
   )
 }
 
