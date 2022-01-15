@@ -35,6 +35,10 @@ const App = () => {
     setTimeout(() => setMessage(null), 5000)
   }
 
+  blogs.sort((a, b) => {
+    return b.likes - a.likes
+  })
+
   const handleLogin = async (event) => {
     event.preventDefault()
 
