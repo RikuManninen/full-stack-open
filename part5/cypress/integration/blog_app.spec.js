@@ -32,4 +32,22 @@ describe('Note app', function() {
       cy.contains('wrong username or password').should('have.css', 'color', 'rgb(255, 0, 0)')
     })
   })
+
+  describe('When logged in', function() {
+    beforeEach(function() {
+      cy.get('input:first').type('riku')
+      cy.get('input:last').type('salasana')
+      cy.contains('login').click()
+      cy.contains('Riku Manninen logged in')
+    })
+
+    it('A blog can be created', function() {
+      cy.contains('new blog').click()
+      cy.get('input[name="Title"]').type('a blog added by cypress')
+      cy.get('input[name="Author"]').type('cypress')
+      cy.get('input[name="Url"]').type('https://google.com')
+      cy.get('button[type="submit"]').contains('create').click()
+      cy.get('.minimizedContent').contains('a blog added by cypress')
+    })
+  })
 })
