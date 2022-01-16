@@ -98,5 +98,32 @@ describe('Note app', function() {
       cy.contains('show').click()
       cy.contains('remove').should('not.exist')
     })
+
+    it('Blogs are being sorted correctly', function() {
+
+      const likes = [1, 66, 42, 99, 0, 100]
+
+      likes.forEach((like, i) => {
+        cy.createBlog({
+          title: `Blog ${i+1}`,
+          author: 'riku',
+          url: 'google.com',
+          likes: like,
+        })
+      })
+
+      likes.sort((a, b) => (b - a))
+
+      cy.get('div[style*=\'border\'').as('blogs')
+
+      cy.get('@blogs').each(
+        ($blog, i) => {
+          if (i >= 0) {
+            cy.wrap($blog).contains('show').click()
+            cy.wrap($blog).contains(`likes ${likes[i]}`)
+          }
+        }
+      )
+    })
   })
 })
