@@ -29,6 +29,12 @@ const reducer = (state = initialState, action) => {
         ? { ...obj, votes: obj.votes + 1 } 
         : obj
       ))
+    case 'ADD_NEW': 
+      return [...state, { 
+        content: action.data.content, 
+        id: getId(), 
+        votes: 0
+      }]
     default: return state
   }
 }
