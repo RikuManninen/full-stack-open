@@ -8,6 +8,7 @@ const App = () => {
   const vote = (id) => {
     console.log('vote', id)
     dispatch({type: 'VOTE', id: id})
+    dispatch({type: 'SORT_BY_VOTES'})
   }
 
   const addAnecdote = event => {
