@@ -9,14 +9,15 @@ const getAll = async () => {
 
 const createNew = async (content) => {
   const object = { content, votes: 0 }
-  try {
-    const response = await axios.post(baseUrl, object)
-    return response.data
-  } catch (error) {
-    console.error(error.response.data)
-  }
+  const response = await axios.post(baseUrl, object)
+  return response.data
 }
 
-const services = { getAll, createNew }
+const addVote = async (anecdote) => {
+  const response = await axios.put(`${baseUrl}/${anecdote.id}`, {...anecdote, votes: anecdote.votes + 1})
+  return response.data
+}
+
+const services = { getAll, createNew, addVote }
 
 export default services
