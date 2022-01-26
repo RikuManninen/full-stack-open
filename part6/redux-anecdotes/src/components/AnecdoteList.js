@@ -4,7 +4,12 @@ import { notify } from './Notification'
 
 const AnecdoteList = () => {
 
-  const anecdotes = useSelector(state => state.anecdotes)
+  const anecdotes = useSelector(state => {
+    return state.filter === 'ALL' 
+    ? state.anecdotes 
+    : state.anecdotes.filter(a => a.content.toLowerCase().includes(state.filter.toLowerCase()))
+  })
+
   const dispatch = useDispatch()
 
   const vote = a => {
