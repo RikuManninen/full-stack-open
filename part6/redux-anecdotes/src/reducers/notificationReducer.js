@@ -1,6 +1,12 @@
-
-const anecdoteReducer = (state = 'initial notification', action) => {
-  return state
+const notificationReducer = (state = null, action) => {
+  return action.data ? action.data : null
 }
 
-export default anecdoteReducer
+export const showNotification = message => {
+  return {
+    type: 'SHOW',
+    data: message
+  }
+}
+
+export default notificationReducer
