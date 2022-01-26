@@ -7,6 +7,16 @@ const getAll = async () => {
   return response.data
 }
 
-const services = { getAll }
+const createNew = async (content) => {
+  const object = { content, votes: 0 }
+  try {
+    const response = await axios.post(baseUrl, object)
+    return response.data
+  } catch (error) {
+    console.error(error.response.data)
+  }
+}
+
+const services = { getAll, createNew }
 
 export default services
