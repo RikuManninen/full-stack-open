@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { Redirect } from 'react-router-dom'
 import {
   BrowserRouter as Router,
   Switch, Route, Link, useParams
@@ -23,7 +24,7 @@ const Menu = (props) => {
           <Footer />
         </Route>
         <Route path='/create'>
-          <CreateNew addNew={props.addNew} />
+          <CreateNew addNew={props.addNew} notify={props.notify} />
           <Footer />
         </Route>
         <Route path='/about'>
@@ -87,6 +88,7 @@ const CreateNew = (props) => {
   const [content, setContent] = useState('')
   const [author, setAuthor] = useState('')
   const [info, setInfo] = useState('')
+  const [redirect, setRedirect] = useState(false)
 
 
   const handleSubmit = (e) => {
@@ -97,6 +99,8 @@ const CreateNew = (props) => {
       info,
       votes: 0
     })
+    setRedirect(true)
+    props.notify(`a new anecdote ${content} created!`)
   }
 
   return (
@@ -117,9 +121,14 @@ const CreateNew = (props) => {
         </div>
         <button>create</button>
       </form>
+      {redirect && (<Redirect to={'/'} />)}
     </div>
   )
 
+}
+
+const Notification = ({ notification }) => {
+  return notification ? notification : null
 }
 
 const App = () => {
@@ -141,6 +150,11 @@ const App = () => {
   ])
 
   const [notification, setNotification] = useState('')
+
+  const notify = (msg) => {
+    setNotification(msg)
+    setTimeout(() => setNotification(null), 10000)
+  }
 
   const addNew = (anecdote) => {
     anecdote.id = (Math.random() * 10000).toFixed(0)
@@ -164,7 +178,8 @@ const App = () => {
   return (
     <div>
       <h1>Software anecdotes</h1>
-      <Menu anecdotes={anecdotes} addNew={addNew} />
+      <Notification notification={notification} />
+      <Menu anecdotes={anecdotes} addNew={addNew} notify={notify} />
     </div>
   )
 }
