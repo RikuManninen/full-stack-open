@@ -1,10 +1,28 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   BrowserRouter as Router,
-  Routes, Route, Link, useParams
+  Routes, Route, Link, useParams, useNavigate
 } from 'react-router-dom'
 
-const Menu = ({ anecdotes, addNew }) => {
+const Notification = ({ message }) => {
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    setIsVisible(true);
+
+    const timer = setTimeout(() => {
+      setIsVisible(false);
+    }, 5000);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [message]);
+
+  return isVisible ? <div>{message}</div> : null;
+};
+
+const Menu = ({ anecdotes, addNew, notification }) => {
   const padding = {
     paddingRight: 5
   }
@@ -15,7 +33,7 @@ const Menu = ({ anecdotes, addNew }) => {
         <Link to='/create' style={padding}>create new</Link>
         <Link to='/about' style={padding}>about</Link>
       </div>
-
+      <Notification message={notification} />
       <Routes>
         <Route path='/anecdotes/:id' element={<Anecdote anecdotes={anecdotes} />} />
         <Route path='/' element={<AnecdoteList anecdotes={anecdotes} />} />
@@ -75,6 +93,7 @@ const CreateNew = (props) => {
   const [author, setAuthor] = useState('')
   const [info, setInfo] = useState('')
 
+  const navigate = useNavigate()
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -84,6 +103,7 @@ const CreateNew = (props) => {
       info,
       votes: 0
     })
+    navigate('/')
   }
 
   return (
@@ -132,6 +152,7 @@ const App = () => {
   const addNew = (anecdote) => {
     anecdote.id = Math.round(Math.random() * 10000)
     setAnecdotes(anecdotes.concat(anecdote))
+    setNotification(`a new anecdote ${anecdote.content} created!`)
   }
 
   const anecdoteById = (id) =>
@@ -151,7 +172,7 @@ const App = () => {
   return (
     <div>
       <h1>Software anecdotes</h1>
-      <Menu anecdotes={anecdotes} addNew={addNew} />
+      <Menu anecdotes={anecdotes} notification={notification} addNew={addNew} />
       <Footer />
     </div>
   )
