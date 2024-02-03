@@ -1,19 +1,20 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Blog from "./components/Blog";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
 import Notification from "./components/Notification";
 import BlogForm from "./components/BlogForm";
+import { NotificationContext } from "./Providers";
+
+const useNotification = () => useContext(NotificationContext);
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
-
   const [user, setUser] = useState(null);
-
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-
-  const [message, setMessage] = useState(null);
+  const { state: notificationState, dispatch: notificationDispatch } =
+    useNotification();
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
@@ -29,8 +30,9 @@ const App = () => {
   }, []);
 
   const msg = (obj) => {
-    setMessage(obj);
-    setTimeout(() => setMessage(null), 5000);
+    console.log(obj);
+    notificationDispatch({ type: "SET_MESSAGE", payload: obj });
+    setTimeout(() => notificationDispatch({ type: "CLEAR_MESSAGE" }), 5000);
   };
 
   blogs.sort((a, b) => {
@@ -39,26 +41,21 @@ const App = () => {
 
   const handleLogin = async (event) => {
     event.preventDefault();
-
     try {
       const user = await loginService.login({
         username,
         password,
       });
-
       window.localStorage.setItem("loggedBlogappUser", JSON.stringify(user));
       blogService.setToken(user.token);
       setUser(user);
       setUsername("");
       setPassword("");
+      msg({ message: "Successfully logged in", type: "success" });
     } catch (exception) {
       console.log("wrong credentials");
-      msg({
-        type: "error",
-        content: "wrong username or password",
-      });
+      msg({ message: "Wrong credentials", type: "error" });
     }
-
     console.log("logging in with", username, password);
   };
 
@@ -86,8 +83,8 @@ const App = () => {
     blogService.create(blogObject).then((returnedBlog) => {
       setBlogs(blogs.concat(returnedBlog));
       msg({
+        message: `a new blog ${returnedBlog.title} by ${returnedBlog.author} added`,
         type: "success",
-        content: `a new blog ${returnedBlog.title} by ${returnedBlog.author} added`,
       });
     });
   };
@@ -139,10 +136,10 @@ const App = () => {
   };
 
   return (
-    <div>
-      <Notification message={message} />
+    <>
+      <Notification message={notificationState.message} />
       {!user ? loginForm() : blogView()}
-    </div>
+    </>
   );
 };
 
