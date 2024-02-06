@@ -5,8 +5,13 @@ import loginService from "./services/login";
 import Notification from "./components/Notification";
 import BlogForm from "./components/BlogForm";
 import { NotificationContext } from "./Providers";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import axios from "axios";
 
 const useNotification = () => useContext(NotificationContext);
+
+const baseUrl = "/api/blogs";
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
@@ -16,9 +21,7 @@ const App = () => {
   const { state: notificationState, dispatch: notificationDispatch } =
     useNotification();
 
-  useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs));
-  }, []);
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem("loggedBlogappUser");
@@ -34,10 +37,6 @@ const App = () => {
     notificationDispatch({ type: "SET_MESSAGE", payload: obj });
     setTimeout(() => notificationDispatch({ type: "CLEAR_MESSAGE" }), 5000);
   };
-
-  blogs.sort((a, b) => {
-    return b.likes - a.likes;
-  });
 
   const handleLogin = async (event) => {
     event.preventDefault();
@@ -79,17 +78,23 @@ const App = () => {
     });
   };
 
-  const createBlog = (blogObject) => {
-    blogService.create(blogObject).then((returnedBlog) => {
-      setBlogs(blogs.concat(returnedBlog));
+  const mutation = useMutation({
+    mutationFn: blogService.create,
+    onSuccess: (returnedBlog) => {
+      console.log("Blog added:", returnedBlog);
+      queryClient.invalidateQueries({ queryKey: ["blogData"] });
       msg({
         message: `a new blog ${returnedBlog.title} by ${returnedBlog.author} added`,
         type: "success",
       });
-    });
+    },
+  });
+
+  const createBlog = async (blogObject) => {
+    mutation.mutate(blogObject);
   };
 
-  const loginForm = () => {
+  const LoginForm = () => {
     return (
       <div>
         <h2>log in to application</h2>
@@ -118,7 +123,22 @@ const App = () => {
     );
   };
 
-  const blogView = () => {
+  const BlogView = () => {
+    const {
+      data: blogs,
+      error,
+      isPending,
+    } = useQuery({
+      queryKey: ["blogData"],
+      queryFn: () => axios.get(baseUrl).then((res) => res.data),
+    });
+
+    if (isPending) return "Loading...";
+
+    if (error) return "An error has occurred: " + blogs.error.message;
+
+    const sortedBlogs = blogs.sort((a, b) => b.likes - a.likes);
+
     return (
       <div>
         <h2>blogs</h2>
@@ -128,7 +148,7 @@ const App = () => {
 
         <BlogForm createBlog={createBlog} />
 
-        {blogs.map((blog) => (
+        {sortedBlogs?.map((blog) => (
           <Blog key={blog.id} blog={blog} user={user} handleLike={handleLike} />
         ))}
       </div>
@@ -138,7 +158,8 @@ const App = () => {
   return (
     <>
       <Notification message={notificationState.message} />
-      {!user ? loginForm() : blogView()}
+      {!user ? <LoginForm /> : <BlogView />}
+      <ReactQueryDevtools initialIsOpen={false} />
     </>
   );
 };

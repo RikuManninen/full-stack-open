@@ -1,17 +1,11 @@
 import axios from "axios";
+import { useQuery } from "@tanstack/react-query";
 const baseUrl = "/api/blogs";
 
 let token = null;
 
 const setToken = (newToken) => {
   token = `bearer ${newToken}`;
-};
-
-const getAll = () => {
-  const request = axios.get(baseUrl);
-  return request.then((response) => {
-    return Array.isArray(response.data) ? response.data : [];
-  });
 };
 
 const create = async (newObject) => {
@@ -41,4 +35,4 @@ const remove = async (objectId) => {
   return response.data;
 };
 
-export default { getAll, create, setToken, put, remove };
+export default { create, setToken, put, remove };
