@@ -1,6 +1,7 @@
 const baseUrl = "/api/users";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
+import { Link } from "react-router-dom";
 
 const UsersView = () => {
   const {
@@ -27,7 +28,7 @@ const UsersView = () => {
           </tr>
           {users.map((user) => (
             <tr key={user.id}>
-              <td>{user.name}</td>
+              <td><Link to={`/users/${user.id}`} state={user}>{user.name}</Link></td>
               <td>{user.blogs.length}</td>
             </tr>
           ))}

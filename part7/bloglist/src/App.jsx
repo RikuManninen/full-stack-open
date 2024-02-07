@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import UsersView from "./views/UsersView";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import Header from "./components/Header";
+import UserView from "./views/UserView";
 const App = () => {
   const { user } = useAuth();
   return (
@@ -15,6 +16,7 @@ const App = () => {
         <Routes>
           <Route path="/" element={!user ? <LoginView /> : <BlogView />} />
           <Route path="/users" element={<UsersView />} />
+          <Route path="/users/:id" element={<UserView />} />
         </Routes>
       </BrowserRouter>
       <ReactQueryDevtools initialIsOpen={false} />
