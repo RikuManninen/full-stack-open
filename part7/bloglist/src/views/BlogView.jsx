@@ -10,7 +10,7 @@ const baseUrl = "/api/blogs";
 
 const BlogView = () => {
   const queryClient = useQueryClient();
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const showNotification = useNotification();
 
   const mutation = useMutation({
@@ -44,12 +44,6 @@ const BlogView = () => {
 
   return (
     <div>
-      <h2>blogs</h2>
-      {user && (
-        <p>
-          {user.name} logged in <button onClick={logout}>logout</button>
-        </p>
-      )}
       <BlogForm createBlog={createBlog} />
 
       {sortedBlogs?.map((blog) => (
