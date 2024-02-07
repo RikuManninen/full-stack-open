@@ -1,6 +1,3 @@
-const baseUrl = "/api/users";
-import axios from "axios";
-import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "react-router-dom";
 const UserView = () => {
   let { state: user } = useLocation();

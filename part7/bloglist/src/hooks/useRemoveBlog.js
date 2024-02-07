@@ -2,7 +2,6 @@ import blogService from "../services/blogs";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 
 const useRemoveBlog = (blog) => {
-  console.log("blog", blog);
   const queryClient = useQueryClient();
   const { mutate } = useMutation({
     mutationFn: () => blogService.remove(blog.id),

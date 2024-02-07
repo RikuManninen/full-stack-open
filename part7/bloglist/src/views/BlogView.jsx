@@ -1,56 +1,48 @@
-import BlogForm from "../components/BlogForm";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
-import Blog from "../components/Blog";
-import blogService from "../services/blogs";
+import { useLocation, useNavigate } from "react-router-dom";
+import useHandleLike from "../hooks/useHandleLike";
+import useRemoveBlog from "../hooks/useRemoveBlog";
 import { useAuth } from "../AuthContext";
-import useNotification from "../hooks/useNotification";
-
-const baseUrl = "/api/blogs";
+import { useQuery } from "@tanstack/react-query";
+import blogService from "../services/blogs";
 
 const BlogView = () => {
-  const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const { user } = useAuth();
-  const showNotification = useNotification();
+  let { state: blog } = useLocation();
 
-  const mutation = useMutation({
-    mutationFn: blogService.create,
-    onSuccess: (returnedBlog) => {
-      console.log("Blog added:", returnedBlog);
-      queryClient.invalidateQueries({ queryKey: ["blogData"] });
-      showNotification({
-        message: `a new blog ${returnedBlog.title} by ${returnedBlog.author} added`,
-        type: "success",
-      });
-    },
-  });
-  const createBlog = async (blogObject) => {
-    mutation.mutate(blogObject);
-  };
   const {
-    data: blogs,
+    data: blogData,
     error,
     isPending,
   } = useQuery({
-    queryKey: ["blogData"],
-    queryFn: () => axios.get(baseUrl).then((res) => res.data),
+    queryKey: ["blogData", blog],
+    queryFn: () => blogService.get(blog.id),
   });
+
+  const handleLike = useHandleLike(blogData);
+  const removeBlog = useRemoveBlog(blogData);
 
   if (isPending) return "Loading...";
 
   if (error) return "An error has occurred: " + blogs.error.message;
 
-  const sortedBlogs = [...blogs].sort((a, b) => b.likes - a.likes);
+  const handleRemove = () => {
+    window.confirm(`Remove blog ${blog.title} by ${blog.author}`) &&
+      removeBlog();
+    navigate("/");
+  };
 
   return (
     <div>
-      <BlogForm createBlog={createBlog} />
-
-      {sortedBlogs?.map((blog) => (
-        <Blog key={blog.id} blog={blog} user={user}/>
-      ))}
+      <h2>{blog.title}</h2>
+      <a href={blog.url}>{blog.url}</a>
+      <p>{blogData.likes} likes</p>
+      <button onClick={handleLike}>like</button>
+      <p>added by {blog.user.name}</p>
+      {user && blog.user.username === user.username && (
+        <button onClick={handleRemove}>remove</button>
+      )}
     </div>
   );
 };
-
 export default BlogView;

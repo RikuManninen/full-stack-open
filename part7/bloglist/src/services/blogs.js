@@ -8,6 +8,14 @@ const setToken = (newToken) => {
   token = `bearer ${newToken}`;
 };
 
+const get = async (objectId) => {
+  const config = {
+    headers: { Authorization: token },
+  };
+  const response = await axios.get(`${baseUrl}/${objectId}`, config);
+  return response.data;
+};
+
 const create = async (newObject) => {
   const config = {
     headers: { Authorization: token },
@@ -35,4 +43,4 @@ const remove = async (objectId) => {
   return response.data;
 };
 
-export default { create, setToken, put, remove };
+export default { get, create, setToken, put, remove };
