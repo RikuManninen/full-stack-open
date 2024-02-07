@@ -1,15 +1,15 @@
 import React, { useState } from "react";
-import blogService from "../services/blogs";
 import propTypes from "prop-types";
+import useHandleLike from "../hooks/useHandleLike";
+import useRemoveBlog from "../hooks/useRemoveBlog";
 
-const Blog = ({ blog, user, handleLike }) => {
-  const [likes, setLikes] = useState(blog.likes);
+const Blog = ({ blog, user }) => {
+  const handleLike = useHandleLike(blog);
+  const removeBlog = useRemoveBlog(blog);
 
-  const [visible, setVisible] = useState(true);
-
-  const removeBlog = () => {
+  const handleRemove = () => {
     window.confirm(`Remove blog ${blog.title} by ${blog.author}`) &&
-      blogService.remove(blog.id).then(setVisible(false));
+      removeBlog();
   };
 
   const blogStyle = {
@@ -18,7 +18,6 @@ const Blog = ({ blog, user, handleLike }) => {
     border: "solid",
     borderWidth: 1,
     marginBottom: 5,
-    display: visible ? "" : "none",
   };
 
   const [blogExpanded, setBlogExpanded] = useState(false);
@@ -28,20 +27,19 @@ const Blog = ({ blog, user, handleLike }) => {
   return (
     <div style={blogStyle}>
       <div style={hideWhenVisible} className="minimizedContent">
-        {blog.title} {blog.author}{" "}
+        {`${blog.title} ${blog.author} `}
         <button onClick={() => setBlogExpanded(true)}>show</button>
       </div>
       <div style={showWhenVisible} className="expandedContent">
-        {blog.title}{" "}
+        {`${blog.title} `}
         <button onClick={() => setBlogExpanded(false)}>hide</button> <br />
-        {blog.url} <br />
-        likes {likes}{" "}
-        <button onClick={() => handleLike(blog, likes, setLikes)}>like</button>{" "}
-        <br />
-        {blog.author}
+        {`${blog.url}`} <br />
+        {`likes ${blog.likes} `}
+        <button onClick={handleLike}>like</button> <br />
+        {`${blog.author}`}
         <br />
         {user && blog.user.username === user.username && (
-          <button onClick={removeBlog}>remove</button>
+          <button onClick={handleRemove}>remove</button>
         )}
       </div>
     </div>
