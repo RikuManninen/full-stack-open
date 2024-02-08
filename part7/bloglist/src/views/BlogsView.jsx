@@ -50,7 +50,7 @@ const BlogView = () => {
       <BlogForm createBlog={createBlog} />
 
       {sortedBlogs?.map((blog) => (
-        <Link to={`/blogs/${blog.id}`} state={blog}>
+        <Link key={blog.id} to={`/blogs/${blog.id}`} state={blog}>
           <Blog key={blog.id} blog={blog} user={user}/>
         </Link>
       ))}

@@ -1,18 +1,22 @@
 import { useAuth } from "../AuthContext";
 
 const Header = () => {
-
   const { user, logout } = useAuth();
 
   return (
     <>
-    <h2>blogs</h2>
-    <p>
-      <p>{user.name} logged in </p>
-      <button onClick={logout}>logout</button>
-    </p>
+      <nav style={{ background: "lightgrey", display: "flex", gap: ".5em", padding: ".5em"}}>
+        <a href="/">
+          blogs
+        </a>
+        <a href="/users">
+          users
+        </a>
+          {user.name} logged in <button onClick={logout}>logout</button>{" "}
+      </nav>
+      <h2>blog app</h2>
     </>
-  )
-}
+  );
+};
 
-export default Header
+export default Header;
