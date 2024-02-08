@@ -1,5 +1,7 @@
-import PropTypes from "prop-types";
 import React, { useState } from "react";
+import PropTypes from "prop-types";
+import { Button, TextField, Box, Typography } from "@mui/material";
+
 const BlogForm = ({ createBlog }) => {
   const [blogFormVisible, setBlogFormVisible] = useState(false);
 
@@ -7,16 +9,9 @@ const BlogForm = ({ createBlog }) => {
   const [author, setAuthor] = useState("");
   const [url, setUrl] = useState("");
 
-  const hideWhenVisible = { display: blogFormVisible ? "none" : "" };
-  const showWhenVisible = { display: blogFormVisible ? "" : "none" };
-
   const addBlog = (event) => {
     event.preventDefault();
-    createBlog({
-      title: title,
-      author: author,
-      url: url,
-    });
+    createBlog({ title, author, url, comments: [] });
     setTitle("");
     setAuthor("");
     setUrl("");
@@ -24,48 +19,60 @@ const BlogForm = ({ createBlog }) => {
   };
 
   return (
-    <div>
-      <div style={hideWhenVisible}>
-        <button onClick={() => setBlogFormVisible(true)}>
-          create new
-        </button>
-      </div>
-      <div style={showWhenVisible}>
-        <h2>create new</h2>
-        <form onSubmit={addBlog} id="form">
-          <div>
-            title:
-            <input
+    <Box>
+      {!blogFormVisible && (
+        <Box marginBottom={2}>
+        <Button variant="contained" onClick={() => setBlogFormVisible(true)}>
+          Create new blog
+        </Button>
+        </Box>
+      )}
+
+      {blogFormVisible && (
+        <Box sx={{ my: 2 }}>
+          <Typography variant="h6" sx={{ my: 2 }}>
+            Create new blog
+          </Typography>
+          <form onSubmit={addBlog} id="form">
+            <TextField
+              fullWidth
               id="title"
-              type="text"
+              label="Title"
+              variant="outlined"
+              sx={{ mb: 2 }}
               value={title}
-              name="Title"
               onChange={({ target }) => setTitle(target.value)}
             />
-          </div>
-          <div>
-            author:
-            <input
-              type="text"
+            <TextField
+              fullWidth
+              id="author"
+              label="Author"
+              variant="outlined"
+              sx={{ mb: 2 }}
               value={author}
-              name="Author"
               onChange={({ target }) => setAuthor(target.value)}
             />
-          </div>
-          <div>
-            url:
-            <input
-              type="text"
+            <TextField
+              fullWidth
+              id="url"
+              label="URL"
+              variant="outlined"
+              sx={{ mb: 2 }}
               value={url}
-              name="Url"
               onChange={({ target }) => setUrl(target.value)}
             />
-          </div>
-          <button type="submit">create</button>
-        </form>
-        <button onClick={() => setBlogFormVisible(false)}>cancel</button>
-      </div>
-    </div>
+            <Box sx={{ display: 'flex', gap: 1 }}>
+              <Button type="submit" variant="contained" color="primary">
+                Create
+              </Button>
+              <Button variant="outlined" onClick={() => setBlogFormVisible(false)}>
+                Cancel
+              </Button>
+            </Box>
+          </form>
+        </Box>
+      )}
+    </Box>
   );
 };
 

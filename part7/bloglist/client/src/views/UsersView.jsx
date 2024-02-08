@@ -1,40 +1,54 @@
-const baseUrl = "/api/users";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
-import { Link } from "react-router-dom";
+import { Link as RouterLink } from "react-router-dom";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Typography,
+  Link
+} from "@mui/material";
+
+const baseUrl = "/api/users";
 
 const UsersView = () => {
-  const {
-    data: users,
-    error,
-    isPending,
-  } = useQuery({
+  const { data: users, error, isPending } = useQuery({
     queryKey: ["userData"],
-    queryFn: () => axios.get(baseUrl).then((res) => res.data),
+    queryFn: () => axios.get(baseUrl).then(res => res.data),
   });
 
-  if (isPending) return "Loading...";
+  if (isPending) return <Typography>Loading...</Typography>;
 
-  if (error) return "An error has occurred: " + users.error.message;
+  if (error) return <Typography>An error has occurred: {error.message}</Typography>;
 
   return (
-    <div>
-      <h2>Users</h2>
-      <table>
-        <tbody>
-          <tr>
-            <td></td>
-            <th>blogs created</th>
-          </tr>
-          {users.map((user) => (
-            <tr key={user.id}>
-              <td><Link to={`/users/${user.id}`} state={user}>{user.name}</Link></td>
-              <td>{user.blogs.length}</td>
-            </tr>
+    <TableContainer component={Paper} sx={{ maxWidth: 650, margin: 'auto', mt: 4 }}>
+      <Typography variant="h4" sx={{ mt: 2, mb: 2, textAlign: 'center' }}>Users</Typography>
+      <Table aria-label="simple table">
+        <TableHead>
+          <TableRow>
+            <TableCell>User</TableCell>
+            <TableCell align="right">Blogs Created</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {users.map(user => (
+            <TableRow key={user.id} hover>
+              <TableCell component="th" scope="row">
+                <Link component={RouterLink} to={`/users/${user.id}`} state={user} underline="none">
+                  {user.name}
+                </Link>
+              </TableCell>
+              <TableCell align="right">{user.blogs.length}</TableCell>
+            </TableRow>
           ))}
-        </tbody>
-      </table>
-    </div>
+        </TableBody>
+      </Table>
+    </TableContainer>
   );
 };
 

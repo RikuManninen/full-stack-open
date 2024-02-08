@@ -1,19 +1,19 @@
 import React from "react";
 import propTypes from "prop-types";
+import { Card, CardContent, Typography } from '@mui/material';
 
 const Blog = ({ blog }) => {
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: "solid",
-    borderWidth: 1,
-    marginBottom: 5,
-  };
-
   return (
-    <div style={blogStyle}>
-      <div>{`${blog.title} ${blog.author} `}</div>
-    </div>
+    <Card sx={{ marginBottom: 2, '&:hover': { boxShadow: 6 } }} variant="outlined">
+        <CardContent>
+          <Typography variant="h6" component="div">
+            {blog.title}
+          </Typography>
+          <Typography variant="body2">
+            {blog.author}
+          </Typography>
+        </CardContent>
+    </Card>
   );
 };
 

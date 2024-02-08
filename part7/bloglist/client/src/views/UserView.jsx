@@ -1,18 +1,28 @@
-import { useLocation } from "react-router-dom";
+import React from 'react';
+import { useLocation } from 'react-router-dom';
+import { Typography, List, ListItem, ListItemText, Paper } from '@mui/material';
+
 const UserView = () => {
   let { state: user } = useLocation();
 
   return (
-    <>
-      <h2>{user.name}</h2>
+    <Paper elevation={2} sx={{ maxWidth: 600, margin: 'auto', mt: 4, p: 3 }}>
+      <Typography variant="h4" component="h2" sx={{ mb: 2 }}>
+        {user.name}
+      </Typography>
 
-      <h3>added blogs</h3>
-      <ul>
+      <Typography variant="h6" component="h3" sx={{ mt: 2, mb: 2 }}>
+        Added blogs
+      </Typography>
+      <List>
         {user.blogs.map((blog) => (
-          <li key={blog.id}>{blog.title}</li>
+          <ListItem key={blog.id}>
+            <ListItemText primary={blog.title} />
+          </ListItem>
         ))}
-      </ul>
-    </>
+      </List>
+    </Paper>
   );
 };
+
 export default UserView;

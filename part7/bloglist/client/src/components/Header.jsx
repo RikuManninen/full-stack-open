@@ -1,21 +1,53 @@
+import React from "react";
 import { useAuth } from "../AuthContext";
+import { AppBar, Toolbar, Typography, Button, Box } from "@mui/material";
+import {useNavigation} from 'react-router-dom';
 
 const Header = () => {
   const { user, logout } = useAuth();
-
   return (
-    <>
-      <nav style={{ background: "lightgrey", display: "flex", gap: ".5em", padding: ".5em"}}>
-        <a href="/">
-          blogs
-        </a>
-        <a href="/users">
-          users
-        </a>
-          {user.name} logged in <button onClick={logout}>logout</button>{" "}
-      </nav>
-      <h2>blog app</h2>
-    </>
+    <AppBar
+      position="static"
+      color="default"
+      elevation={3}
+      style={{ borderRadius: 3 }}
+    >
+      <Toolbar style={{ display: "flex", justifyContent: "space-between" }}>
+        <Box style={{ display: "flex", gap: "1em" }}>
+          <Typography variant="h6" color="inherit" noWrap>
+            blog app
+          </Typography>
+
+          <Button
+            href="/"
+            variant="contained"
+            style={{ textDecoration: "none" }}
+          >
+            blogs
+          </Button>
+
+          <Button
+            href="/users"
+            variant="outlined"
+            style={{ textDecoration: "none" }}
+          >
+            users
+          </Button>
+        </Box>
+        <Box style={{ display: "flex", gap: "1em" }}>
+          <Typography
+            variant="body1"
+            color="inherit"
+            style={{ flexGrow: 1, float: "right", marginTop: ".4em" }}
+          >
+            {user.name} logged in
+          </Typography>
+          <Button variant="contained" color="error" onClick={logout}>
+            logout
+          </Button>
+        </Box>
+      </Toolbar>
+    </AppBar>
   );
 };
 

@@ -6,6 +6,7 @@ import blogService from "../services/blogs";
 import { useAuth } from "../AuthContext";
 import useNotification from "../hooks/useNotification";
 import { Link } from "react-router-dom";
+import { Paper } from "@mui/material";
 
 const baseUrl = "/api/blogs";
 
@@ -47,6 +48,7 @@ const BlogView = () => {
 
   return (
     <div>
+      <Paper elevation={2} sx={{ maxWidth: 600, margin: 'auto', mt: 4, p: 3 }}>
       <BlogForm createBlog={createBlog} />
 
       {sortedBlogs?.map((blog) => (
@@ -54,6 +56,7 @@ const BlogView = () => {
           <Blog key={blog.id} blog={blog} user={user}/>
         </Link>
       ))}
+      </Paper>
     </div>
   );
 };
