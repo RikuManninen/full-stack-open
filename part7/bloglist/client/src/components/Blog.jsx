@@ -12,7 +12,7 @@ const Blog = ({ blog }) => {
 
   return (
     <div style={blogStyle}>
-      <div className="minimizedContent">{`${blog.title} ${blog.author} `}</div>
+      <div>{`${blog.title} ${blog.author} `}</div>
     </div>
   );
 };

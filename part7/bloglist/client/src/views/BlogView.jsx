@@ -32,6 +32,8 @@ const BlogView = () => {
     navigate("/");
   };
 
+  console.log(blog.comments);
+
   return (
     <div>
       <h2>{blog.title}</h2>
@@ -41,6 +43,16 @@ const BlogView = () => {
       <p>added by {blog.user.name}</p>
       {user && blog.user.username === user.username && (
         <button onClick={handleRemove}>remove</button>
+      )}
+      <h3>comments</h3>
+      {blog.comments.length > 0 ? (
+        <ul>
+          {blog.comments.map((comment, i) => (
+            <li key={i}>{comment}</li>
+          ))}
+        </ul>
+      ) : (
+        <p>No comments yet.</p>
       )}
     </div>
   );
