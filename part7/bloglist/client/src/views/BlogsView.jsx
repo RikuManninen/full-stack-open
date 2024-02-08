@@ -41,7 +41,7 @@ const BlogView = () => {
 
   if (isPending) return "Loading...";
 
-  if (error) return "An error has occurred: " + blogs.error.message;
+  if (error) return "An error has occurred: " + error.message;
 
   const sortedBlogs = [...blogs].sort((a, b) => b.likes - a.likes);
 
