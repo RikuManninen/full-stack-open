@@ -34,12 +34,12 @@ const Authors = ({ show }) => {
         </tbody>
       </table>
       <h2>Set birthyear</h2>
-      <BirthYearForm />
+      <BirthYearForm authors={authors} />
     </div>
   )
 }
 
-const BirthYearForm = () => {
+const BirthYearForm = ({authors}) => {
 
   const [name, setName] = useState('')
   const [born, setBorn] = useState('')
@@ -68,11 +68,8 @@ const BirthYearForm = () => {
     <div>
       <form onSubmit={submit}>
         <div>
-          name
-          <input
-            value={name}
-            onChange={({ target }) => setName(target.value)}
-          />
+          author
+          <SelectAuthor authors={authors.data.allAuthors} setName={setName} />
         </div>
         <div>
           born
@@ -84,6 +81,16 @@ const BirthYearForm = () => {
         <button type="submit">update author</button>
       </form>
     </div>
+  )
+}
+
+const SelectAuthor = ({ authors, setName }) => { 
+  return (
+    <select onChange={({ target }) => setName(target.value)}>
+      {authors.map((a) => (
+        <option key={a.name} value={a.name}>{a.name}</option>
+      ))}
+    </select>
   )
 }
 
