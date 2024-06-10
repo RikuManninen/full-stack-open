@@ -5,6 +5,7 @@ const mongoose = require('mongoose')
 mongoose.set('strictQuery', false)
 const Author = require('./models/Author')
 const Book = require('./models/Book')
+const { GraphQLError } = require('graphql')
 
 require('dotenv').config()
 
@@ -84,7 +85,17 @@ const resolvers = {
   },
   Mutation: {
     addBook: async (root, args) => {
+      if (args.title.length < 5) {
+        throw new GraphQLError('Book title must be at least 5 characters long');
+      }
+      if (args.author.length < 5) {
+        throw new GraphQLError('Author\'s name must be at least 5 characters long');
+      }
       let author = await Author.findOne({ name: args.author })
+      if (!author) {
+        author = new Author({ name: args.author });
+        await author.save();
+      }
       const book = new Book({ ...args, author: author._id })
       return book.save()
     },
