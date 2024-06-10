@@ -43,20 +43,44 @@ const typeDefs = `
       published: Int!
       genres: [String!]!
     ): Book
+
+    editAuthor(
+      name: String!
+      setBornTo: Int
+    ): Author
   }
 
   type Query {
+    bookCount: Int!
     authorCount: Int!
+    allBooks(author: String, genre: String): [Book!]!
     allAuthors: [Author!]!
   }
 `
 
 const resolvers = {
   Query: {
+    bookCount: async () => Book.collection.countDocuments(),
     authorCount: async () => Author.collection.countDocuments(),
     allAuthors: async () => {
       return Author.find({})
     },
+    allBooks: async (root, args) => {
+      let filter = {}
+
+      if (args.author) {
+        const author = await Author.findOne({ name: args.author })
+        if (author) {
+          filter.author = author._id
+        }
+      }
+
+      if (args.genre) {
+        filter.genres = { $in: [args.genre] }
+      }
+
+      return Book.find(filter).populate('author')
+    }
   },
   Mutation: {
     addBook: async (root, args) => {
@@ -64,6 +88,14 @@ const resolvers = {
       const book = new Book({ ...args, author: author._id })
       return book.save()
     },
+    editAuthor: async (root, args) => {
+      const author = await Author.findOneAndUpdate(
+        { name: args.name }, 
+        { born: args.setBornTo },
+        { new: true }
+      )
+      return author
+    }
   },
   Author: {
     bookCount: async (root) => Book.countDocuments({ author: root._id }),
