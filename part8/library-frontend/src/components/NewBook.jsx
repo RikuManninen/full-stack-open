@@ -12,8 +12,7 @@ const NewBook = ({ show }) => {
 
   const [addBook] = useMutation(ADD_BOOK, {
     refetchQueries: [{ query: ALL_BOOKS }, { query: ALL_AUTHORS }]
-  }
-)
+  })
 
   if (!show) {
     return null
@@ -22,7 +21,7 @@ const NewBook = ({ show }) => {
   const submit = async (event) => {
     event.preventDefault()
 
-    console.log('add book...')
+    console.log('add book...', title, author, published, genres)
 
     await addBook({
       variables: {
