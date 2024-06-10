@@ -10,7 +10,7 @@ const ALL_AUTHORS = gql`
   }
 `
 
-const Authors = ({show}) => {
+const Authors = ({ show }) => {
 
   const authors = useQuery(ALL_AUTHORS)
 
