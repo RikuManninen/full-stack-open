@@ -1,3 +1,5 @@
+import { parseArgs } from "./utils";
+
 const calculateBmi = (height: number, weight: number): string => {
 
   const bmi: number = weight / ((height / 100) * (height / 100));
@@ -13,4 +15,13 @@ const calculateBmi = (height: number, weight: number): string => {
   }
 }
 
-console.log(calculateBmi(180, 120));
+try {
+  const [ height, weight ] = parseArgs(process.argv.slice(2));
+  console.log(calculateBmi(height, weight));
+} catch (e: unknown) {
+  let errorMessage = 'Something bad happened.';
+  if (e instanceof Error) {
+    errorMessage += ' Error: ' + e.message;
+  }
+  console.log(errorMessage);
+}

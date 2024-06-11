@@ -1,3 +1,5 @@
+import { parseArgs } from "./utils";
+
 type Rating = 1 | 2 | 3;
 
 interface Result {
@@ -8,30 +10,32 @@ interface Result {
   success: boolean;
   rating: Rating;
   ratingDescription: string;
-};
+}
 
-const calculateExercises = (dailyExerciseHours: number[], target: number): Result => {
+interface Args {
+  target: number;
+  dailyExerciseHours: number[];
+}
+
+const calculateExercises = ({ dailyExerciseHours, target }: Args): Result => {
   const periodLength = dailyExerciseHours.length;
-  const trainingDays = dailyExerciseHours.filter(hours => hours > 0).length;
+  const trainingDays = dailyExerciseHours.filter((hours) => hours > 0).length;
   const average = dailyExerciseHours.reduce((a, b) => a + b) / periodLength;
   const success = average >= target;
 
   let rating: Rating;
+  let ratingDescription: string;
+
   const roundedAverage = Math.round(average);
+  
   if (roundedAverage < target) {
     rating = 1;
-  } else if (roundedAverage > target) {
-    rating = 3;
-  } else {
-    rating = 2;
-  }
-
-  let ratingDescription: string;
-  if (rating === 1) {
     ratingDescription = 'room for improvement';
-  } else if (rating === 2) {
+  } else if (average < target) {
+    rating = 2;
     ratingDescription = 'not too bad but could be better';
-  } else if (rating === 3) {
+  } else {
+    rating = 3;
     ratingDescription = 'excellent';
   }
 
@@ -46,4 +50,17 @@ const calculateExercises = (dailyExerciseHours: number[], target: number): Resul
   };
 };
 
-console.log(calculateExercises([3, 0, 2, 4.5, 0, 3, 1], 2));
+try {
+  const parsed: number[] = parseArgs(process.argv.slice(2));
+  const args: Args = {
+    target: parsed[0],
+    dailyExerciseHours: parsed.slice(1),
+  };
+  console.log(calculateExercises(args));
+} catch (e: unknown) {
+  let errorMessage = "Something bad happened.";
+  if (e instanceof Error) {
+    errorMessage += " Error: " + e.message;
+  }
+  console.log(errorMessage);
+}
