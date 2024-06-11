@@ -4,8 +4,12 @@ import { useState } from "react";
 
 
 const Books = ({ show }) => {
-  const { data, loading, error } = useQuery(ALL_BOOKS);
+  
   const [selectedGenre, setSelectedGenre] = useState('all genres');
+
+  const { data, loading, error } = useQuery(ALL_BOOKS, {
+    variables: { genre: selectedGenre === 'all genres' ? null : selectedGenre }
+  });
 
   if (!show) { return null }
 
@@ -14,12 +18,7 @@ const Books = ({ show }) => {
 
   const books = data.allBooks || [];
 
-  const genres = books ? books.flatMap(book => book.genres) : []
-  const uniqueGenres = [...new Set(genres)]
-
-  const filteredBooks = selectedGenre === 'all genres'
-  ? books
-  : books.filter(book => book.genres.includes(selectedGenre));
+  const uniqueGenres = [...new Set(books.flatMap(book => book.genres))]
 
   return (
     <div>
@@ -32,14 +31,13 @@ const Books = ({ show }) => {
             <th>author</th>
             <th>published</th>
           </tr>
-          {filteredBooks.map((a) => (
+          {books.map((a) => (
             <tr key={a.title}>
               <td>{a.title}</td>
               <td>{a.author.name}</td>
               <td>{a.published}</td>
             </tr>
           ))}
-          
         </tbody>
       </table>
       {uniqueGenres.map(genre => <button key={genre} onClick={() => setSelectedGenre(genre)}>{genre}</button>)}<button onClick={() => setSelectedGenre('all genres')}>all genres</button>
