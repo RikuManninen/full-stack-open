@@ -20,7 +20,7 @@ Below is a table of the course parts along with their completion dates, showcasi
 | Part 5: Testing React apps                                       | Jan 16, 2022     |
 | Part 6: Advanced state management                                | Feb 1, 2022      |
 | Part 7: React router, custom hooks, styling app with CSS and webpack | Feb 8, 2024   |
-| Part 8: GraphQL | Not Completed |
+| Part 8: GraphQL | Jun 11, 2024 |
 | Part 9: TypeScript | Not Completed |
 | Part 10: React Native | Not Completed |
 | Part 11: CI/CD | Not Completed |

@@ -5,6 +5,22 @@ const Author = require('./models/Author')
 const Book = require('./models/Book')
 const User = require('./models/User')
 const { GraphQLError } = require('graphql')
+const DataLoader = require('dataloader');
+
+const bookCountLoader = new DataLoader(async (authorIds) => {
+  const books = await Book.find({ author: { $in: authorIds } });
+  const bookCountMap = {};
+
+  books.forEach((book) => {
+    const authorId = book.author.toString();
+    if (!bookCountMap[authorId]) {
+      bookCountMap[authorId] = 0;
+    }
+    bookCountMap[authorId]++;
+  });
+
+  return authorIds.map((id) => bookCountMap[id] || 0);
+});
 
 const resolvers = {
   Query: {
@@ -124,7 +140,9 @@ const resolvers = {
     }
   },
   Author: {
-    bookCount: async (root) => Book.countDocuments({ author: root._id }),
+    bookCount: async (root) => { 
+      return bookCountLoader.load(root._id)
+    },
   }
 }
 
