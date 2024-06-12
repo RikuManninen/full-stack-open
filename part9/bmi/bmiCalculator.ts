@@ -13,7 +13,7 @@ const calculateBmi = (height: number, weight: number): string => {
   } else {
     return 'obese';
   }
-}
+};
 
 try {
   const [ height, weight ] = parseArgs(process.argv.slice(2));
@@ -26,4 +26,4 @@ try {
   console.log(errorMessage);
 }
 
-export default calculateBmi
+export default calculateBmi;
